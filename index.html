@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Session 11. Chi-squared test</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Wu Zeng, MD, PhD" />
+    <script src="libs/header-attrs-2.22/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/rladies.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/rladies-fonts.css" rel="stylesheet" />
+    <link href="libs/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset-0.2.6/panelset.js"></script>
+    <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view-0.2.6/tile-view.js"></script>
+    <link rel="stylesheet" href="libs/css/hygge-gu.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+class: title-slide, center, middle, inverse
+
+# Session 11. Chi-squared test
+
+&lt;!--- ### &lt;br/&gt; Subtitle ---&gt;
+
+#### Wu Zeng, MD, PhD
+
+&lt;img src="libs/pic/GU.gif" width="10%" align="center" /&gt; 
+
+#### Department of Global Health
+
+#### Georgetown University
+
+### March 27 2025
+
+---
+class: top
+
+# Contents
+
+.pull-left[
+
+- Frequency and contingency tables
+
+- Objective of `\(\chi^2\)` test
+
+- Overview of `\(\chi^2\)` test
+
+- `\(\chi^2\)` test for 2 by 2 table 
+
+- `\(\chi^2\)` for independent binary outcome
+
+- Correlation between two ordinal variables 
+
+]
+
+.pull-right[
+&lt;img style="border-radius: 20%;" src="https://miro.medium.com/max/600/0*0KxYI406ZCijgHIW.webp" width="300px"/&gt;
+]
+---
+
+# `\(chi^2\)` test 
+
+&lt;center&gt;
+
+&lt;iframe width="834" height="469" src="https://www.youtube.com/embed/5Nrq_jqu9Ao" title="Chi Squared Test of Independence" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen&gt;&lt;/iframe&gt;
+
+---
+
+# Frequency and contingency tables 
+
+- Frequency table: Describe the frequency of a categorical variable
+
+- Contingency tables: Describe the frequency of two or more than two categorical variables
+
+Example 
+
+In a class
+.pull-left[
+
+&lt;center&gt;
+Frequency table 
+
+| Gender | Number | Percentage |
+|:--:|---:|---:|
+|Female|50 |66.7% |
+|Male|25|33.3% |
+]
+
+.pull-right[
+
+
+&lt;table style="text-align:center"&gt;&lt;caption&gt;&lt;strong&gt;Contingency tabel&lt;/strong&gt;&lt;/caption&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;science&lt;/td&gt;&lt;td&gt;non-science&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;female&lt;/td&gt;&lt;td&gt;45&lt;/td&gt;&lt;td&gt;36&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;male&lt;/td&gt;&lt;td&gt;58&lt;/td&gt;&lt;td&gt;15&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+]
+---
+# Epidemiological examples 
+
+A case control study in a hospital with .red[100] COVID-19 cases and .red[100] non COVID-19 patients. The investigator asked both COVID-19 and non COVID-19 patients if they had been to a wet market in the last 2 weeks before the onset of the symptom. The investigation results was shown as below 
+
+
+&lt;table style="text-align:center"&gt;&lt;caption&gt;&lt;strong&gt;Contingency tabel&lt;/strong&gt;&lt;/caption&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;COVID-19 cases&lt;/td&gt;&lt;td&gt;non-COVID-19 cases&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Been to wet market&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;td&gt;15&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Not been to wet market&lt;/td&gt;&lt;td&gt;80&lt;/td&gt;&lt;td&gt;85&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+Is the exposure to wet market associated with COVID-19?
+
+`$$\text{Odds ratio} = \frac{ad}{bc} = \frac{20*85}{15*80} = 1.42$$`
+`$$\chi^2 = \frac{n(ad-bc)^2}{(a+c)(b+d)(a+b)(c+d)}= \frac{200*(20*85-15*80)^2}{100*100*35*165}=0.86$$`
+---
+
+
+```r
+chisq.test(a, correct = FALSE)
+```
+
+```
+
+	Pearson's Chi-squared test
+
+data:  a
+X-squared = 0.8658, df = 1, p-value = 0.3521
+```
+---
+
+# Data in the reality 
+
+using the dataset of `arthritis` from `vcd` package
+
+.pull-left[
+
+
+```r
+vcd::Arthritis %&gt;%
+  head() %&gt;%
+  kableExtra::kable()
+```
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; ID &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Treatment &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Sex &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Age &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Improved &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 57 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Treated &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Some &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Treated &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; None &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 77 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Treated &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; None &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Treated &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marked &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 36 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Treated &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marked &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Treated &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marked &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+]
+
+.pull-right[
+
+It is data from double-blind clinical trial of new treatment for rheumatoid arthritis, with 84 patients
+
+- `id`: unique id for patients
+
+- `Treatment`: has two levels Treated and Placebo
+
+- `Sex`: Male and Female
+
+- `age`: age of patients
+
+- `Improved`: None, Some, Marked
+
+]
+---
+
+# Data exploration 
+
+.pull-left[
+
+```r
+dtarth &lt;- vcd::Arthritis
+ggplot(data = dtarth, mapping = aes(x = Improved)) +
+  geom_bar() +
+  theme_classic() + theme(text = element_text(size = 15))
+```
+
+&lt;img src="index_files/figure-html/unnamed-chunk-5-1.png" height="400" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+
+## One way table
+
+
+```r
+mytable &lt;- table(dtarth$Improved)
+mytable
+```
+
+```
+
+  None   Some Marked 
+    42     14     28 
+```
+
+```r
+prop.table(mytable)
+```
+
+```
+
+     None      Some    Marked 
+0.5000000 0.1666667 0.3333333 
+```
+]
+---
+# two-way tables
+
+`Treatment` vs `Improved`
+
+.pull-left[
+
+```r
+dtarth &lt;- vcd::Arthritis
+ggplot(data = dtarth, mapping = aes(x = Treatment, fill = Improved)) +
+  geom_bar(position = "fill") +
+  theme_classic() + theme(text = element_text(size = 15))
+```
+]
+
+.pull-right[
+
+&lt;img src="index_files/figure-html/bar-1.png" height="450" style="display: block; margin: auto;" /&gt;
+
+
+
+]
+
+
+---
+# two-way tables
+
+`Treatment` vs `Improved`
+
+.pull-left[
+
+
+```r
+#mytable2 &lt;- table(dtarth$Treatment,dtarth$Improved)
+mytable2 &lt;- xtabs(~ Treatment + Improved, data = dtarth)
+mytable2
+```
+
+```
+         Improved
+Treatment None Some Marked
+  Placebo   29    7      7
+  Treated   13    7     21
+```
+
+
+```r
+prop.table(mytable2, 1)
+```
+
+```
+         Improved
+Treatment      None      Some    Marked
+  Placebo 0.6744186 0.1627907 0.1627907
+  Treated 0.3170732 0.1707317 0.5121951
+```
+]
+
+.pull-right[
+
+```r
+prop.table(mytable2, 2)
+```
+
+```
+         Improved
+Treatment      None      Some    Marked
+  Placebo 0.6904762 0.5000000 0.2500000
+  Treated 0.3095238 0.5000000 0.7500000
+```
+
+
+```r
+addmargins(prop.table(mytable2, 1), 2)
+```
+
+```
+         Improved
+Treatment      None      Some    Marked       Sum
+  Placebo 0.6744186 0.1627907 0.1627907 1.0000000
+  Treated 0.3170732 0.1707317 0.5121951 1.0000000
+```
+]
+
+---
+
+# Multidimentsional tables 
+
+
+```r
+mytable3 &lt;- xtabs(~ Treatment + Sex + Improved, data = dtarth)
+mytable3
+```
+
+```
+, , Improved = None
+
+         Sex
+Treatment Female Male
+  Placebo     19   10
+  Treated      6    7
+
+, , Improved = Some
+
+         Sex
+Treatment Female Male
+  Placebo      7    0
+  Treated      5    2
+
+, , Improved = Marked
+
+         Sex
+Treatment Female Male
+  Placebo      6    1
+  Treated     16    5
+```
+
+---
+
+# Overview of `\(\chi^2\)` test
+
+.panelset[
+.panel[.panel-name[Table]
+
+```r
+dtarth2 &lt;- dtarth %&gt;%
+  mutate(dimproved = if_else(Improved == "Some" | Improved == "Marked", 1, 0)) %&gt;%
+  mutate(dimproved = factor(dimproved, labels =  c("None", "Improved")))
+
+mytable4 &lt;- xtabs(~ Treatment + dimproved, data = dtarth2)
+mytable4
+```
+
+```
+         dimproved
+Treatment None Improved
+  Placebo   29       14
+  Treated   13       28
+```
+
+```r
+prop.table(mytable4,1)
+```
+
+```
+         dimproved
+Treatment      None  Improved
+  Placebo 0.6744186 0.3255814
+  Treated 0.3170732 0.6829268
+```
+]
+
+.panel[.panel-name[chi-squre formula]
+
+
+```
+         dimproved
+Treatment None Improved
+  Placebo   29       14
+  Treated   13       28
+```
+
+```
+         dimproved
+Treatment None Improved
+  Placebo 21.5     21.5
+  Treated 20.5     20.5
+```
+
+```
+[1] 0.002243769
+```
+
+`$$\chi^2 = \sum \frac{(O-E)^2}{E}= \frac{(29-21.5)^2}{25} + \frac{(14-21.5)^2}{21.5} + \frac{(13-20.5)^2}{20.5} + \frac{(28-20.5)^2}{20.5} = 9.3386$$`
+
+]
+
+.panel[.panel-name[Chi-squre distribution]
+
+&lt;img src="index_files/figure-html/unnamed-chunk-15-1.png" height="400" style="display: block; margin: auto;" /&gt;
+]
+
+
+.panel[.panel-name[Chi-square]
+
+
+```r
+chisq.test(mytable4)
+```
+
+```
+
+	Pearson's Chi-squared test with Yates' continuity correction
+
+data:  mytable4
+X-squared = 9.3386, df = 1, p-value = 0.002244
+```
+
+
+```r
+fisher.test(mytable4) # when sample size is small, say &lt; 30
+```
+
+```
+
+	Fisher's Exact Test for Count Data
+
+data:  mytable4
+p-value = 0.002056
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+  1.631439 12.374422
+sample estimates:
+odds ratio 
+  4.375354 
+```
+
+]
+]
+---
+
+# Categoricial variables with more than two levels 
+
+.pull-left[
+
+Improved vs treatment 
+
+
+```r
+mytable5 &lt;- xtabs(~Treatment + Improved, data = dtarth)
+mytable5
+```
+
+```
+         Improved
+Treatment None Some Marked
+  Placebo   29    7      7
+  Treated   13    7     21
+```
+
+```r
+chisq.test(mytable5)
+```
+
+```
+
+	Pearson's Chi-squared test
+
+data:  mytable5
+X-squared = 13.055, df = 2, p-value = 0.001463
+```
+]
+
+.pull-right[
+
+Improved vs Sex
+
+
+```r
+mytable6 &lt;- xtabs(~Sex + Improved, data = dtarth)
+mytable6
+```
+
+```
+        Improved
+Sex      None Some Marked
+  Female   25   12     22
+  Male     17    2      6
+```
+
+```r
+chisq.test(mytable6)
+```
+
+```
+
+	Pearson's Chi-squared test
+
+data:  mytable6
+X-squared = 4.8407, df = 2, p-value = 0.08889
+```
+]
+
+---
+exclude: TRUE
+
+# Cochran-Mantel-Haenszel test 
+.pull-left[
+
+```r
+mytable7 &lt;- xtabs(~ Treatment + Improved + Sex, data = dtarth)
+mytable7
+```
+
+```
+, , Sex = Female
+
+         Improved
+Treatment None Some Marked
+  Placebo   19    7      6
+  Treated    6    5     16
+
+, , Sex = Male
+
+         Improved
+Treatment None Some Marked
+  Placebo   10    0      1
+  Treated    7    2      5
+```
+
+```r
+mantelhaen.test(mytable7)
+```
+
+```
+
+	Cochran-Mantel-Haenszel test
+
+data:  mytable7
+Cochran-Mantel-Haenszel M^2 = 14.632, df = 2, p-value = 0.0006647
+```
+]
+.pull-right[
+
+
+```r
+prop.table(mytable7)
+```
+
+```
+, , Sex = Female
+
+         Improved
+Treatment       None       Some     Marked
+  Placebo 0.22619048 0.08333333 0.07142857
+  Treated 0.07142857 0.05952381 0.19047619
+
+, , Sex = Male
+
+         Improved
+Treatment       None       Some     Marked
+  Placebo 0.11904762 0.00000000 0.01190476
+  Treated 0.08333333 0.02380952 0.05952381
+```
+
+
+
+]
+---
+exclude: true
+# McNemar's `\(\chi^2\)`
+
+Repeated measures of a binary outcome or match study
+
+651 students had psychological assessment of their depression status twice: One was at beginning of the semester, and the other at the end of semester. The results are presented below 
+
+
+&lt;table style="text-align:center"&gt;&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;&lt;/td&gt;&lt;td&gt;Not.Depressed&lt;/td&gt;&lt;td&gt;Depressed&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style="text-align:left"&gt;Not Depressed&lt;/td&gt;&lt;td&gt;146&lt;/td&gt;&lt;td&gt;155&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="text-align:left"&gt;Depressed&lt;/td&gt;&lt;td&gt;47&lt;/td&gt;&lt;td&gt;303&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan="3" style="border-bottom: 1px solid black"&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+Are the results of these two related? 
+
+`$$McNemar's \chi^2 = \frac{(n_{21}-n_{12})^2}{n_{21}+n_{12}} = \frac{(155-47)^2}{155+47} = 57.74$$`
+---
+exclude: true
+# McNemar test in R 
+
+
+```r
+nd2 &lt;- read.csv("https://people.brandeis.edu/~wuzengcn/webm/McNemar.csv", row.names = 1)
+*mnd2 &lt;- as.matrix(nd2)
+mnd2
+```
+
+```
+               Not.Depressed Depressed
+Not Depressed            146       155
+Depressed                 47       303
+```
+
+```r
+mcnemar.test(mnd2)
+```
+
+```
+
+	McNemar's Chi-squared test with continuity correction
+
+data:  mnd2
+McNemar's chi-squared = 56.678, df = 1, p-value = 5.133e-14
+```
+
+
+---
+# Correlation between two ordinal variables 
+
+- Ordered categorical variables (health status: good fair bad)
+
+
+```r
+nd3 &lt;- read.csv("https://people.brandeis.edu/~wuzengcn/webm/Excercise.csv")
+nd4 &lt;- bbl::freq2raw(nd3, freq = Freq) # need to install the package of bbl 
+xtabs(Freq ~ Exercise + Healthstatus, data = nd3)
+```
+
+```
+        Healthstatus
+Exercise  1  2  3
+       1 50 12 10
+       2 16 46 25
+       3 10 20 60
+```
+
+```r
+cor(nd4, method = "spearman")
+```
+
+```
+              Exercise Healthstatus
+Exercise     1.0000000    0.5329163
+Healthstatus 0.5329163    1.0000000
+```
+---
+
+# Group exercise 
+
+.pull-left[
+
+Direct data entry
+
+In a case-control study to examine the association between food exposure and diarrhea, the investigator conducted interviews to 200 diarrhea cases, and 400 healthy individuals. Among the diarrhea cases, 80 had sandwich from a restaurant, while 76 had sandwich in the healthy group. Please
+
+1. enter data into `r`
+
+2. conduct a `\(\chi^2\)` analysis to test the relationship 
+
+3. what is the conclusion from your analysis
+]
+
+.pull-right[
+
+please use the data from `mtcars`, please do the following:
+
+1. cross tabulate between `am` (type of transmission) and `vs`(type of engine)
+
+2. conduct a `\(\chi^2\)` test
+
+3. Is there any relationship between `am` and `vs`?
+
+4. please do the same for `am` and `cyl` (number of cylinders)
+
+
+]
+
+
+---
+
+class: middle, center, inverse
+
+# .large[Thank you!]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
